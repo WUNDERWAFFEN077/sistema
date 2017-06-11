@@ -1,0 +1,113 @@
+{% extends "partials/layout.twig" %}
+{% block page_header %}
+    <div class="page-header">
+        <h1>
+            Reporte de Inventario           
+        </h1> 
+    </div><!-- /.page-header -->
+{% endblock %}  
+{% block content %}    
+    <div class="well well-sm">
+        <div class="row">
+            <div class="col-xs-5">
+                <select id="anio" class="form-control">
+                    <option value="2017">2017</option>
+                    <option value="2016">2016</option>                    
+                </select>
+            </div>
+            <div class="col-xs-5">
+                <select id="mes" class="form-control">
+                    <option value="1">Enero</option>
+                    <option value="2">Febrero</option>
+                    <option value="3">Marzo</option>
+                    <option value="4">Abril</option>
+                    <option value="5">Mayo</option>
+                    <option value="6">Junio</option>
+                    <option value="7">Julio</option>
+                    <option value="8">Agosto</option>
+                    <option value="9">Setiembre</option>
+                    <option value="10">Octubre</option>
+                    <option value="11">Noviembre</option>
+                    <option value="12">Diciembre</option>
+                </select>
+            </div>
+            <div class="col-xs-2">
+                <button id="btn-filtrar" class="btn btn-primary btn-block">
+                    <i class="fa fa-filter"></i> Buscar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="grid"></div>
+   
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(document).ready(function(){
+    var fecha = new Date();
+    var anio_actual = fecha.getFullYear();
+    var mes_actual = fecha.getMonth() + 1;
+
+    $("#anio").val(anio_actual).change();
+    $("#mes").val(mes_actual).change();
+
+    $("#btn-filtrar").click(function(){
+        cargarGrilla(
+            $("#anio").val(),
+            $("#mes").val()
+            );
+    });
+
+    cargarGrilla(
+            $("#anio").val(),
+            $("#mes").val()
+            );
+})
+
+function cargarGrilla(y,m){
+    var data = {
+        class: 'table-striped table-bordered table-condensed table-hover',
+        columnas: [            
+            //EL Campo columna es trabaja con tablas directas o con campos de vista
+            { leyenda: 'Año', class: 'text-center', ordenable: false, columna: 'anio',style: 'width: 60px'},
+            { leyenda: 'Mes', class: 'text-center', ordenable: false, columna: 'mes',style: 'width: 60px'},
+            { leyenda: 'Producto', class: 'text-center', ordenable: false, columna: 'producto'},
+            { leyenda: 'Cantidad', class: 'text-center', ordenable: false, columna: 'cantidad',style: 'width: 80px'},
+            { leyenda: 'Movimiento', class: 'text-center', ordenable: false, columna: 'movimiento',style: 'width: 120px'},
+            { leyenda: 'Documento', class: 'text-center', ordenable: false, columna: 'documento',style: 'width: 120px'},
+            { leyenda: 'Serie', class: 'text-center', ordenable: false, columna: 'serie',style: 'width: 80px'},
+            { leyenda: 'Número', class: 'text-center', ordenable: false, columna: 'numero',style: 'width: 80px'},
+            { leyenda: 'Registrado', class: 'text-center', ordenable: false, columna: 'fecha', style: 'width:130px;' },
+        ],
+        modelo: [    
+            { propiedad: 'anio', class: 'text-center'},   
+            { propiedad: 'mes', class: 'text-center', formato: function(tr, obj, valor){
+                return valor.padLeft(2);
+            } },  
+            { propiedad: 'producto'}, 
+            { propiedad: 'cantidad', class: 'text-right', formato: function(tr, obj, valor){
+                return parseFloat(valor).format(2);
+            } },  
+            { propiedad: 'movimiento', class: 'text-center'}, 
+            { propiedad: 'documento', class: 'text-center'}, 
+            { propiedad: 'serie', class: 'text-center'}, 
+            { propiedad: 'numero', class: 'text-center'}, 
+            { propiedad: 'fecha', class: 'text-center', formato: function(tr, obj, valor){
+                return moment(valor).format('DD/MM/YYYY');
+            } },
+          
+
+        ],
+        url: '{{ 'reporte/inventarios_grid'|url }}/' + y + '/' + m,
+        paginable: true,
+        limite: [20, 60, 100],
+        columna: 'id',
+        columna_orden: 'desc'
+    };
+
+    $("#grid").anexGrid(data);
+}
+</script>
+{% endblock %}

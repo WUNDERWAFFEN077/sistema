@@ -1,0 +1,181 @@
+{% extends "partials/layout.twig" %}
+{% block breadcrumbs %}
+    <div class="breadcrumbs ace-save-state" id="breadcrumbs">
+        <ul class="breadcrumb">
+            <li>
+                <i class="ace-icon glyphicon glyphicon-th-large"></i>
+                <a href="{{ 'producto'|url }}"> Productos </a>
+            </li>
+            <li class="active">
+                {% if model.id is not null %}          
+                 Actualizar
+                {% else %} 
+                 Registrar
+                {% endif %}
+                {{ stock }}
+            </li>     
+        </ul><!-- /.breadcrumb -->
+
+    </div>
+{% endblock %}
+{% block content %}
+
+    <form id="form" method="post" action="{{ 'producto/guardar'|url }}">
+         <div class="alert-container"></div>
+         <div class="panel panel-info">
+            <div class="panel-heading">
+              <h3 class="panel-title"><i class='glyphicon glyphicon-cog'></i> Mantenimiento de Producto</h3>
+            </div>
+            <div class="panel-body">
+             <div class="row">            
+                <div class="col-md-3 col-lg-3" align="center"> 
+                    <div class="thumbnail"> 
+                        {% if model.foto is not null %}
+                            <img class="img-responsive" id="img_load" src="{{model.foto|public}}">
+                        {% else %}   
+                            <img class="img-responsive" id="img_load" src="{{'media/no_disponible.jpg'|public}}">               
+                        {% endif %}                  
+                    </div>
+                    <br>      
+                    {% if model.id is not null %}          
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+
+                                <input class='filestyle input-ms' data-buttonText="Logo" type="file" name="foto" id="foto" onchange="upload_image();">
+                                <span data-key="foto" class="form-validation-failed"></span>
+                            </div>
+                        </div>                    
+                    </div>
+                    {% else %} 
+                    <div class="row">
+                        <div class="col-md-12">
+                            <span>Registre un producto, antes de subir una imagen.</span>
+                        </div>                    
+                    </div> 
+                    {% endif %}
+                </div>
+                <div class="col-md-9 col-lg-9">
+                <input type="hidden" class="form-control" name="id" id="id" value="{{model.id}}" />
+                <table class="table table-condensed">
+                    <tbody>
+                        <tr>
+                            <td class='col-md-3'>Nombre:</td>
+                            <td>
+                                <input type="text" class="form-control input-sm" name="nombre" id="nombre" value="{{model.nombre}}" />
+                                 <span data-key="nombre" class="form-validation-failed"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class='col-md-3'>Marca:</td>
+                            <td>
+                                <input type="text" class="form-control input-sm" name="marca" id="marca" value="{{model.marca}}" />
+                                <span data-key="marca" class="form-validation-failed"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class='col-md-3'>Costo:</td>
+                            <td>
+                                <div class="input-group">
+                                <span class="input-group-addon">S/</span>
+                                <input type="text" class="form-control input-sm" name="costo" id="costo" value="{{model.costo}}" />
+                                </div>
+                                <span data-key="costo" class="form-validation-failed"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class='col-md-3'>Precio:</td>
+                            <td>
+                                <div class="input-group">
+                                <span class="input-group-addon">S/</span>
+                                <input type="text" class="form-control input-sm" name="precio" id="precio" value="{{model.precio}}" />
+                                </div>
+                                <span data-key="precio" class="form-validation-failed"></span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                                
+                    
+                    <!--<div class="form-group">
+                        <label>Nombre</label>
+                        <input type="text" class="form-control" name="nombre" id="nombre" value="{{model.nombre}}" />
+                        <span data-key="nombre" class="form-validation-failed"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Marca</label>
+                        <input type="text" class="form-control" name="marca" id="marca" value="{{model.marca}}" />
+                        <span data-key="marca" class="form-validation-failed"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Costo</label>
+                        <input type="text" class="form-control" name="costo" id="costo" value="{{model.costo}}" />
+                        <span data-key="costo" class="form-validation-failed"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Precio</label>
+                        <input type="text" class="form-control" name="precio" id="precio" value="{{model.precio}}" />
+                        <span data-key="precio" class="form-validation-failed"></span>
+                    </div>-->
+                   
+                   
+                </div>            
+            </div>
+            <div class="form-group panel-footer text-center">
+                <button type="submit" class="btn btn-sm btn-success" data-ajax="true"><i class="glyphicon glyphicon-refresh"></i> Guardar</button>
+                &nbsp;&nbsp;
+                <button onclick="redirect('producto')" type="button" class="btn btn-sm btn-danger" ><i class="glyphicon glyphicon-ban-circle"></i> Cancelar</button>             
+               
+            </div>
+
+         </div>
+        </div>
+    </form>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        function upload_image(){
+                
+            var inputFileImage = document.getElementById("foto");
+            var file = inputFileImage.files[0];
+            if( (typeof file === "object") && (file !== null) )
+            {
+                $("#thumbnail").text('Cargando...'); 
+                var fd = new FormData();
+                fd.append('foto', $('input[type=file]')[0].files[0]);
+                fd.append('id',$('#id').val());
+                fd.append('nombre',$('#nombre').val());
+                fd.append('marca',$('#marca').val());
+                fd.append('costo',$('#costo').val());
+                fd.append('precio',$('#precio').val());
+                //data.append('foto',file);
+
+                var dt = $('#form').serialize();
+
+                
+                
+                $.ajax({
+                    url:base_url('producto/cargar'),        // Url to which the request is send
+                    type: "POST",             // Type of request to be send, called as method
+                    data: fd,               // Data sent to server, a set of key/value pairs (i.e. form fields and values)         
+                    contentType: false, 
+                    processData:false,        // To send DOMDocument or non processed data file it is set to false
+                    dataType: 'json',
+                    success: function(data)   // A function to be called if request succeeds
+                    {   
+                        //Limpiar cache de imagen
+                        url_imagen = base_url(data.imagen+"?"+new Date().getTime());
+                        $("#img_load").attr("src",url_imagen);
+                        
+                    }
+                }); 
+            }
+            
+            
+        }
+</script>
+{% endblock %}

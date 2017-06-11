@@ -1,0 +1,92 @@
+{% extends "partials/layout.twig" %}
+{% block breadcrumbs %}
+    <div class="breadcrumbs ace-save-state" id="breadcrumbs">
+        <ul class="breadcrumb">
+            <li>
+                <i class="ace-icon glyphicon glyphicon-th-large"></i>
+                <a href="{{ 'cliente'|url }}"> Clientes </a>
+            </li>
+            <li class="active">
+                {% if model.id is not null %}          
+                 Actualizar
+                {% else %} 
+                 Registrar
+                {% endif %}
+                
+            </li>     
+        </ul><!-- /.breadcrumb -->
+
+        <div class="nav-search" id="nav-search">
+            <form class="form-search">
+                <span class="input-icon">
+                    <input type="text" placeholder="Buscar ..." class="nav-search-input" id="nav-search-input" autocomplete="off" />
+                    <i class="ace-icon fa fa-search nav-search-icon"></i>
+                </span>
+            </form>
+        </div><!-- /.nav-search -->
+    </div>
+{% endblock %}
+{% block content %}
+
+    <form id="form" method="post" action="{{ 'cliente/guardar'|url }}">
+         <div class="alert-container"></div>
+         <div class="panel panel-info">
+            <div class="panel-heading">
+              <h3 class="panel-title"><i class='glyphicon glyphicon-cog'></i> Mantenimiento de Clientes</h3>
+            </div>
+            <div class="panel-body">
+            <div class="row">            
+                
+                <div class="col-md-12 col-lg-12">
+                <input type="hidden" class="form-control" name="id" id="id" value="{{model.id}}" />
+                <table class="table table-condensed">
+                    <tbody>
+                        <tr>
+                            <td class='col-md-3'>Nombre:</td>
+                            <td>
+                                <input type="text" class="form-control input-sm" name="nombre" id="nombre" value="{{model.nombre}}" />
+                                 <span data-key="nombre" class="form-validation-failed"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class='col-md-3'>Telefono:</td>
+                            <td>
+                                <input type="text" class="form-control input-sm" name="telefono" id="telefono" value="{{model.telefono}}" />
+                                <span data-key="telefono" class="form-validation-failed"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class='col-md-3'>Correo:</td>
+                            <td>
+                                <input type="text" class="form-control input-sm" name="email" id="email" value="{{model.email}}" />
+                                <span data-key="email" class="form-validation-failed"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class='col-md-3'>Dirección:</td>
+                            <td>
+                                <input type="text" class="form-control input-sm" name="direccion" id="direccion" value="{{model.direccion}}" />
+                                <span data-key="direccion" class="form-validation-failed"></span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                   
+                   
+                </div>            
+            </div>
+            <div class="form-group panel-footer text-center">
+                <button type="submit" class="btn btn-sm btn-success" data-ajax="true"><i class="glyphicon glyphicon-refresh"></i> Guardar</button>
+                &nbsp;&nbsp;
+                <button onclick="redirect('cliente')" type="button" class="btn btn-sm btn-danger" ><i class="glyphicon glyphicon-ban-circle"></i> Cancelar</button>             
+               
+            </div>
+
+         </div>
+        </div>
+    </form>
+{% endblock %}
+
+{% block scripts %}
+    
+{% endblock %}

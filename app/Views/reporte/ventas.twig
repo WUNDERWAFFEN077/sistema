@@ -1,0 +1,54 @@
+{% extends "partials/layout.twig" %}
+{% block content %}
+    <h1 class="page-header">
+        Reporte de venta por mes
+    </h1>
+
+    <div id="grid"></div>
+   
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(document).ready(function(){
+
+
+    var data = {
+        class: 'table-striped table-bordered table-condensed table-hover',
+        columnas: [            
+            { leyenda: 'Año', class: '', style: 'width:300px;' },
+            { leyenda: 'Mes', class: '', style: 'width:200px;' },
+            { leyenda: 'Costo', style: 'width:120px;', class: 'text-right' },
+            { leyenda: 'Ingreso', style: 'width:120px;', class: 'text-right' },
+            { leyenda: 'Utilidad', style: 'width:120px;', class: 'text-right' },            
+        ],
+        modelo: [            
+            { propiedad: 'anio'},
+            { propiedad: 'mes', formato: function(tr, obj, valor){
+                return moment(valor).format('MMMM');
+            } },
+            { propiedad: 'costo', class: 'text-right', formato: function(tr, obj, valor){
+                return parseFloat(valor).format(2);
+            } },            
+            { propiedad: 'total', class: 'text-right', formato: function(tr, obj, valor){
+                return parseFloat(valor).format(2);
+            } },
+            { propiedad: 'utilidad', class: 'text-right', formato: function(tr, obj, valor){
+                return parseFloat(obj.total - obj.costo).format(2);
+            } },         
+          
+
+        ],
+        url: '{{ 'reporte/ventas_grid'|url }}',
+        paginable: true,
+        limite: [20, 60, 100],
+        columna: 'id',
+        columna_orden: 'desc'
+    };
+
+    $("#grid").anexGrid(data);
+
+   
+})
+</script>
+{% endblock %}

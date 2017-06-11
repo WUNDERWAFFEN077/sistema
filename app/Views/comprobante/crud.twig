@@ -1,0 +1,627 @@
+{% extends "partials/layout.twig" %} 
+{% block breadcrumbs %}
+    <div class="breadcrumbs ace-save-state" id="breadcrumbs">
+        <ul class="breadcrumb">
+            <li>
+                <i class="ace-icon fa fa-dollar"></i>
+                <a href="{{ 'comprobante'|url }}"> Comprobantes </a>
+            </li>
+            <li class="active">
+                {% if model.id is not null %}          
+                 Actualizar
+                {% else %} 
+                 Registrar
+                {% endif %}               
+            </li>     
+        </ul><!-- /.breadcrumb -->
+    </div>
+{% endblock %}
+{% block content %}        
+    {% set ven_feem = "now"|date("Y-m-d")  %}
+    <div class="row" >
+    <input type="hidden" class="form-control" name="id" id="id" value="{{model.id}}" />
+    <div class="col-xs-12">
+        <div class="row">
+            <div class="form-group col-lg-5 col-md-5 col-sm-5 col-xs-6">              
+              <label><strong>Tipo Comprobante(*):</strong></label>
+              <select name="tipo" id="tipo" class="form-control selectpicker" required="">
+                 <option value="01" {{ model.tipo == '01' ? 'selected' : '' }}>Factura</option>
+                 <option value="03" {{ model.tipo == '03' ? 'selected' : '' }}>Boleta</option>
+                 <option value="12" {{ model.tipo == '12' ? 'selected' : '' }}>Ticket</option>
+              </select>             
+            </div>
+             <div class="form-group col-lg-2 col-md-2 col-sm-2 col-xs-6">
+              <label><strong>Serie:</strong></label>
+              <input type="text" class="form-control" name="serie" id="serie" maxlength="7" placeholder="Serie" value="{{model.serie}}" required="">
+            </div>
+            <div class="form-group col-lg-2 col-md-2 col-sm-2 col-xs-6">
+              <label><strong>Número:</strong></label>
+              <input type="text" class="form-control" name="numero" id="numero" maxlength="10" placeholder="Número" value="{{model.numero}}" required="">
+            </div>
+            <div class="form-group col-lg-3 col-md-3 col-sm-3 col-xs-6">
+             <label><strong>Fecha(*):</strong></label>
+             <input type="date" class="form-control" name="fecha" id="fecha" value="{{model.fecha}}" required="">
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
+              <label><strong>Cliente(*):</strong></label>             
+              <select class="form-control" name="cliente_id" id="cliente_id" style="width:100%">
+                {% if model.id is not null %} 
+                  <option value="{{model.cliente_id}}" selected="selected">{{model.cliente.nombre}}</option>
+                {% endif %}                
+              </select>
+            </div>
+            <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
+              <label><strong>Dirección:</strong></label>
+              <input id="direccion" class="form-control" type="text" placeholder="Dirección" readonly value="{{model.cliente.direccion}}">
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="form-group col-lg-7 col-md-7 col-sm-7 col-xs-12">                
+                <select class="form-control" name="producto_id" id="producto_id" value="" style="width:100%">
+              </select>
+            </div>
+            <div class="form-group col-lg-2 col-md-2 col-sm-2 col-xs-5">
+                <input id="cantidad" class="form-control" type="text" placeholder="Cantidad" value="{{model.detalle.producto.cantidad}}">
+            </div>
+            <div class="form-group col-lg-2 col-md-2 col-sm-2 col-xs-5">
+                <div class="input-group">
+                    <span class="input-group-addon">S/</span>
+                    <input id="precio" class="form-control" type="text" placeholder="Precio" value="{{model.detalle.producto.precio}}">
+                </div>
+            </div>
+            <div class="form-group col-lg-1 col-md-1 col-sm-1 col-xs-2">
+                <button onclick="agregarDetalle();" class="btn btn-primary form-control" id="btn-agregar">
+                    <i class="glyphicon glyphicon-plus"></i>
+                </button>
+            </div>
+        </div>
+        <hr>        
+        <ul id="facturador-detalle" class="list-group">
+            {% set nd = 0 %}
+            <div id="detalle">
+              {% for detalle in model.detalle %}                
+                {% set nd = nd + 1 %}
+              <li class="list-group-item">
+                <div class="row" id="fila_detalle" param="{{nd}}">
+                  <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                    <div class="input-group">
+                    <span class="input-group-btn">
+                    <button class="btn btn-xs btn-danger form-control" style="height:30px;"  onclick="">
+                    <i class="glyphicon glyphicon-minus"></i>
+                    </button>
+                    </span>
+                    <input type="hidden" class="form-control" name="orden{{nd}}" id="orden{{nd}}" value="{{detalle.id}}" />
+                    <input type="hidden" id="row_id" value="{{nd}}">
+                    <input type="hidden" id="producto_id{{nd}}" value="{{detalle.producto_id}}">
+                    <input id="producto{{nd}}" name="producto[]" class="form-control input-sm" type="text" readonly placeholder="Nombre del producto" value="{{detalle.producto.nombre}}">
+                    </div>
+                  </div>
+                  <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4">
+                    <input name="cantidad[]" id="cantidad{{nd}}" class="form-control input-sm only_select" type="text" placeholder="Cantidad" value="{{detalle.cantidad}}">
+                  </div>
+                  <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4">
+                    <div class="input-group">
+                    <span class="input-group-addon" id="basic-addon1">S/</span>
+                    <input name="precio[]" id="precio{{nd}}" class="form-control input-sm only_select" type="text" placeholder="Precio" value="{{detalle.precio}}">
+                    </div>
+                  </div>
+                  <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4">
+                    <div class="input-group">
+                      <span class="input-group-addon">S/</span>
+                      <input class="form-control input-sm" id="total{{nd}}" type="text" readonly value="{{detalle.total}}">
+                    </div>
+                  </div>
+                </div>
+              </li>
+              {% endfor %}
+              <input type="hidden" id="num_detalle" value="{{nd}}">
+            </div>
+            <br/>
+            <div>
+              <li class="list-group-item">
+                  <div class="row text-right">
+                      <div class="col-xs-10 text-right">
+                          Sub Total
+                      </div>
+                      <div class="col-xs-2">
+                          <b id="sub_total">{{model.sub_total|number_format(2, '.', ',')}}</b>
+                      </div>
+                  </div>
+              </li>
+              <li class="list-group-item">
+                  <div class="row text-right">
+                      <div class="col-xs-10 text-right">
+                          IGV (18%)
+                      </div>
+                      <div class="col-xs-2">
+                          <b id="igv">{{model.iva|number_format(2, '.', ',')}}</b>
+                      </div>
+                  </div>
+              </li>
+              <li class="list-group-item">
+                  <div class="row text-right">
+                      <div class="col-xs-10 text-right">
+                          Total
+                      </div>
+                      <div class="col-xs-2">
+                          <b id="total">{{model.total|number_format(2, '.', ',')}}</b>
+                      </div>
+                  </div>
+              </li>
+            </div>
+        </ul>
+        <div  class="form-group">
+          <button id="cmdGenerar" type="button" class="btn btn-success btn-lg btn-block">
+            Generar Comprobante
+          </button>
+        </div>        
+    </div>
+</div>
+{% endblock %}
+
+
+{% block scripts %}
+  <script type="text/javascript">
+  var n_dec = 2;
+
+  $(function(){
+   $("#fecha").on("change",function(){
+    //alert(this.value);
+   });
+
+   $("body").on("keyup", "[id^=cantidad], [id^=precio]", function(e) {
+        var row = $(this).closest('.row');
+        ix = row.attr("param");
+        
+        var producto_cantidad = $("#cantidad"+ix).val();
+        var producto_precio = $("#precio"+ix).val();
+        total = parseFloat(producto_cantidad) * parseFloat(producto_precio);
+        total = precise_round(total,n_dec);
+
+        $("#total"+ix).val(total);
+        
+        calcularTotal();
+    });
+
+  
+
+
+  
+  $('#cliente_id').select2({
+    language: "es",
+    placeholder: 'Buscar cliente',
+    ajax: {
+      url: function (params) {
+      return base_url('cliente/buscar/' + params.term);   
+    },
+    
+    data: function (params) {
+      return null
+    },
+      dataType: 'json',
+      delay: 250,
+      processResults: function (data) {
+          return {
+              results: $.map(data, function (item) {
+                //console.log(item);
+                  return {
+                      text: item.nombre,
+                      id: item.id,
+                      direccion: item.direccion,
+
+                  }
+              })
+          };
+      },
+      cache: true
+    },
+    minimumInputLength: 2,
+    
+  }).on('select2:select', function (e) {
+        //console.log(e.params.data);
+        $("#direccion").val(e.params.data.direccion);
+        setTimeout(function() { $("#producto_id").focus(); }, 500);
+        //$(this).val([]).trigger('change');
+        //$(this).val([e.params.data.id]).trigger("change");
+  });
+
+  
+
+  $('#producto_id').select2({
+    language: "es",
+    placeholder: 'Buscar producto',
+    ajax: {
+      url: function (params) {
+      return base_url('producto/buscar/' + params.term);   
+    },
+    data: function (params) {
+      return null
+    },
+      dataType: 'json',
+      delay: 250,
+      processResults: function (data) {
+        var cliente_id = $("#cliente_id").val();
+        if(cliente_id=='' || cliente_id===null){     
+            bootbox.alert({ 
+              size: "small",
+              message: "<h5>Complete los datos del cliente!</h5>", 
+              callback: function(){ 
+                $("#producto").val('');
+                $("#producto_id").val('');
+                $("#cantidad").val('');
+                $("#precio").val('');
+                setTimeout(function() { $("#cliente").focus(); }, 500);
+               }
+
+            })
+
+            return false;
+          }
+          return {
+              results: $.map(data, function (item) {
+                //console.log(item);
+                  return {
+                      text: item.nombre,
+                      id: item.id,
+                  }
+              })
+          };
+      },
+      cache: true
+    },
+    minimumInputLength: 1,
+    
+  }).on('select2:select', function (e) {
+
+        setTimeout(function() { $("#cantidad").focus(); }, 200);
+        
+  });
+   
+
+  
+
+     
+
+    //__clienteAutocomplete();
+    //__productoAutocomplete();
+
+    $("#cmdGenerar").on("click",function(){
+      generarComprobante();    
+    });
+
+    $("body").on("keypress","[id^=cantidad], [id^=precio]", function(e) {
+
+          var charCode = (e.which) ? e.which : event.keyCode;
+          var number = $(this).val().split('.');
+
+          if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57)) {
+              return false;
+          }
+          //just one dot (thanks ddlab)
+          if(number.length>1 && charCode == 46){
+               return false;
+          }
+          //get the carat position
+          var caratPos = getSelectionStart($(this)[0]);
+          var dotPos = $(this).val().indexOf(".");
+
+
+          var decimal = n_dec;
+
+          if( caratPos > dotPos && dotPos>-1 && (number[1].length > decimal-1)){
+              return false;
+          }
+          return true;
+
+        });
+  });
+
+  function generarComprobante(){
+    var id = $("#id").val();
+    var cliente_id = $("#cliente_id").val();
+    var fecha = $("#fecha").val();
+    var tipo = $("#tipo").val();
+    var serie = $("#serie").val();
+    var numero = $("#numero").val();
+    var tableLength = $("#detalle .row").length;
+    var detalle = [];
+    $("body").find("input[id^=row_id]").each(function(){
+        var ix = $(this).val();     
+        var producto = {};
+
+        var orden = $("#orden"+ix).val();
+        var producto_id = $("#producto_id"+ix).val();
+        var producto_cantidad = $("#cantidad"+ix).val();
+        var producto_precio = $("#precio"+ix).val();
+        if(producto_id!=''){
+          producto['id'] = orden;
+          producto['producto_id'] = producto_id;
+          producto['cantidad'] = producto_cantidad;
+          producto['precio'] = producto_precio;
+          producto['costo'] = 0;
+          detalle.push(producto);
+        }
+
+        
+    });
+
+    if(cliente_id == '' || fecha == '' || detalle.length == 0){
+       bootbox.alert({ 
+        message: "<h5>No se puede generar el comprobante. Revise los datos!</h5>", 
+        callback: function(){ 
+         }
+      })
+      return false;
+    }
+    
+
+    var message = 'Está seguro de registrar el Comprobante?';
+      bootbox.confirm({ 
+        size: "small",
+        buttons: {
+        'cancel': {
+          label: 'Cancelar',
+          className: 'btn-sm btn-danger pull-left'
+        },
+        'confirm': {
+          label: 'Confirmar',
+          className: 'btn-primary pull-right'
+        }
+      },
+        message: message, 
+        callback: function(result){ 
+          if(result){
+            $.ajax({
+              type: "POST", 
+              url: base_url('comprobante/generar'), 
+              data : {  
+                id: id,
+                cliente_id: cliente_id,
+                fecha:fecha,
+                tipo:tipo,
+                serie:serie,
+                numero:numero,
+                detalle: detalle     
+                },
+              /*dataType: "json",*/
+              /*async: false,*/
+              success: function(response){
+                //console.log(response);
+                window.location.href = base_url('comprobante');           
+                  
+              },
+              error: function(){
+                alert(r.message);
+              }
+            });
+          }
+          
+        }
+      })  
+
+
+    
+    
+  }
+
+  function agregarDetalle(){
+    var n_detalle = $("#num_detalle").val();
+    var producto = $("#producto_id").text().trim();
+    var producto_id = $("#producto_id").val();
+    var cliente_id = $("#cliente_id").val();
+    var cantidad = $("#cantidad").val();
+    cantidad = precise_round(cantidad,n_dec);
+    var precio = $("#precio").val();
+    precio = precise_round(precio,n_dec);
+    var total = cantidad * precio;
+    total = precise_round(total,n_dec);
+
+    //var tableLength = $("#detalle .row").length;
+    console.log(n_detalle);
+    var idx = parseInt(n_detalle) + 1;
+
+    if(cliente_id==''){     
+      bootbox.alert({ 
+        size: "small",
+        message: "<h5>Complete los datos del cliente!</h5>", 
+        callback: function(){ 
+          $("#producto").text('');
+          $("#producto_id").val('');
+          $("#cantidad").val('');
+          $("#precio").val('');
+         }
+      })
+      return false;
+    }
+
+    if(producto_id=='' || cantidad<=0 || precio<=0){
+      bootbox.alert({ 
+        size: "small",
+        message: "<h5>Revise los datos del producto!</h5>", 
+        callback: function(){ 
+          setTimeout(function() { $("#producto_id").select(); }, 500);
+         }
+      })
+      return false;
+    }
+    
+    //add detalle
+    var detalle='<li class="list-group-item">';
+    detalle +='      <div class="row" id="fila_detalle" param="'+idx+'">';
+    detalle +='          <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">';
+    detalle +='              <div class="input-group">';
+    detalle +='                  <span class="input-group-btn">';
+    detalle +='                      <button class="btn btn-xs btn-danger form-control" style="height:30px;"  onclick="">';
+    detalle +='                          <i class="glyphicon glyphicon-minus"></i>';
+    detalle +='                      </button>';
+    detalle +='                  </span>';
+    detalle +='                  <input type="hidden" id="orden'+idx+'" value="0">';
+    detalle +='                  <input type="hidden" id="row_id" value="'+idx+'">';
+    detalle +='                  <input type="hidden" id="producto_id'+idx+'" value="'+producto_id+'">';
+    detalle +='                  <input id="producto'+idx+'" name="producto[]" class="form-control input-sm" type="text" readonly placeholder="Nombre del producto" value="'+producto+'">';
+    detalle +='              </div>';
+    detalle +='          </div>';
+    detalle +='          <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4">';
+    detalle +='              <input name="cantidad[]" id="cantidad'+idx+'" class="form-control input-sm only_select" type="text" placeholder="Cantidad" value="'+cantidad+'">';
+    detalle +='          </div>';
+    detalle +='          <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4">';
+    detalle +='              <div class="input-group">';
+    detalle +='                  <span class="input-group-addon" id="basic-addon1">S/</span>';
+    detalle +='                  <input name="precio[]" id="precio'+idx+'" class="form-control input-sm only_select" type="text" placeholder="Precio" value="'+precio+'">';
+    detalle +='              </div>';
+    detalle +='          </div>';
+    detalle +='          <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4">';
+    detalle +='              <div class="input-group">';
+    detalle +='                  <span class="input-group-addon">S/</span>';
+    detalle +='                  <input class="form-control input-sm" id="total'+idx+'" type="text" readonly value="'+total+'">';
+    detalle +='              </div>';
+    detalle +='          </div>';
+    detalle +='      </div>';
+    detalle +='  </li>';
+    $("#detalle").append(detalle);
+
+    $("#producto_id").val('');
+    $("#producto_id").text('');
+    $("#cantidad").val('');    
+    $("#precio").val('');
+    $("#num_detalle").val(idx);
+
+    calcularTotal();
+
+    setTimeout(function() { $("#producto").focus(); }, 300);
+
+
+    $(".only_select").on("click",function() {
+        var input = $(this);
+        $(input).select();
+    });
+
+    /*
+    $("body").on("keyup", "[id^=cantidad], [id^=precio]", function(e) {
+        var row = $(this).closest('.row');
+        ix = row.attr("param");
+        console.log(row);
+        console.log(ix);
+        calcularTotal();
+    });*/
+    
+  }
+
+  /*
+  function calcular(){
+    calcularTotal();
+  }
+  */
+
+  function calcularTotal(){
+    var total = 0;
+    $("body").find("input[id^=row_id]").each(function(){
+        var ix = $(this).val();
+        
+        var producto_cantidad = $("#cantidad"+ix).val();
+        var producto_precio = $("#precio"+ix).val();
+
+        total += producto_cantidad * producto_precio;
+        
+    });
+
+    igv = Formulas.calcularIva(total);
+    subTotal = Formulas.calcularMontoSinIva(total);
+
+    igv = parseFloat(igv).format(2);
+    subTotal = parseFloat(subTotal).format(2);
+    total = parseFloat(total).format(2);
+
+
+   $("#sub_total").html(subTotal);
+   $("#igv").html(igv);
+   $("#total").html(total);
+
+  }
+ 
+  /*
+  function __clienteAutocomplete(){
+    $('#cliente').click(function(){ $("#cliente").select(); });
+    $("#cliente").autocomplete({     
+        select: function( event, e ) {
+          
+          $("#cliente_id").val(e.item.id);
+          $("#cliente").val(e.item.nombre);
+          $("#direccion").val(e.item.direccion);
+
+          return false;
+      },
+       source: function( request, response ) {              
+              $.ajax({
+                  url: base_url('cliente/buscar/' + request.term),
+                  dataType: "json",
+                  success: function(data) {
+                    //console.log(data);    
+                      response(data);
+                  }
+              });
+          }
+    
+    }).data( "ui-autocomplete" )._renderItem = function( ul, item ) {
+
+      return $( "<li></li>" )
+      .data( "item.autocomplete", item )
+      .append( "<a><b>" + item.nombre + "</b></a>" )
+      .appendTo( ul );
+      
+      };
+    }
+  
+  function __productoAutocomplete(){
+    $('#producto').click(function(){ $("#producto").select(); });
+    $("#producto").autocomplete({     
+        select: function( event, e ) {
+          $("#producto_id").val(e.item.id);
+          $("#producto").val(e.item.nombre);
+          $("#cantidad").focus();
+          return false;
+      },
+       source: function( request, response ) {
+            var cliente_id = $("#cliente_id").val();
+            if(cliente_id=='' || cliente_id===null){     
+                bootbox.alert({ 
+                  size: "small",
+                  message: "<h5>Complete los datos del cliente!</h5>", 
+                  callback: function(){ 
+                    $("#producto").val('');
+                    $("#producto_id").val('');
+                    $("#cantidad").val('');
+                    $("#precio").val('');
+                    setTimeout(function() { $("#cliente").focus(); }, 500);
+                   }
+
+                })
+
+                return false;
+              }
+
+
+              $.ajax({
+                  url: base_url('producto/buscar/' + request.term),
+                  dataType: "json",
+                  success: function(data) {
+                    //console.log(data);    
+                      response(data);
+                  }
+              });
+          }
+    
+    }).data( "ui-autocomplete" )._renderItem = function( ul, item ) {
+
+      return $( "<li></li>" )
+      .data( "item.autocomplete", item )
+      .append( "<a><b>" + item.nombre + "</b></a>" )
+      .appendTo( ul );
+      
+      };
+    }*/
+  </script>
+{% endblock %}

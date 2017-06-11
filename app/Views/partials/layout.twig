@@ -1,0 +1,215 @@
+{% include('partials/header.twig') %}
+	<body class="no-skin">
+		{% if menu is null or menu %}
+		{% include('partials/menu.twig') %}
+		{% endif %}
+
+		<div class="main-container ace-save-state" id="main-container">
+			<script type="text/javascript">
+				try{ace.settings.loadState('main-container')}catch(e){}
+			</script>
+			{% if menu is null or menu %}
+			{% include('partials/leftnav.twig') %}
+			{% endif %}
+			
+
+			<div class="main-content">
+				<div class="main-content-inner">					
+					{% block breadcrumbs %}
+						
+					{% endblock %}
+					
+
+					<div class="page-content">
+						{% if menu is null or menu %}
+						<div class="ace-settings-container" id="ace-settings-container">
+							<div class="btn btn-app btn-xs btn-warning ace-settings-btn" id="ace-settings-btn">
+								<i class="ace-icon fa fa-cog bigger-130"></i>
+							</div>
+
+							<div class="ace-settings-box clearfix" id="ace-settings-box">
+								<div class="pull-left width-50">
+									<div class="ace-settings-item">
+										<div class="pull-left">
+											<select id="skin-colorpicker" class="hide">
+												<option data-skin="no-skin" value="#438EB9">#438EB9</option>
+												<option data-skin="skin-1" value="#222A2D">#222A2D</option>
+												<option data-skin="skin-2" value="#C6487E">#C6487E</option>
+												<option data-skin="skin-3" value="#D0D0D0">#D0D0D0</option>
+											</select>
+										</div>
+										<span>&nbsp; Choose Skin</span>
+									</div>
+
+									<div class="ace-settings-item">
+										<input type="checkbox" class="ace ace-checkbox-2 ace-save-state" id="ace-settings-navbar" autocomplete="off" />
+										<label class="lbl" for="ace-settings-navbar"> Fijar Barra de Navegación</label>
+									</div>
+
+									<div class="ace-settings-item">
+										<input type="checkbox" class="ace ace-checkbox-2 ace-save-state" id="ace-settings-sidebar" autocomplete="off" />
+										<label class="lbl" for="ace-settings-sidebar"> Fijar Barra Lateral</label>
+									</div>
+									<!--
+									<div class="ace-settings-item">
+										<input type="checkbox" class="ace ace-checkbox-2 ace-save-state" id="ace-settings-breadcrumbs" autocomplete="off" />
+										<label class="lbl" for="ace-settings-breadcrumbs"> Fixed Breadcrumbs</label>
+									</div>
+
+									<div class="ace-settings-item">
+										<input type="checkbox" class="ace ace-checkbox-2" id="ace-settings-rtl" autocomplete="off" />
+										<label class="lbl" for="ace-settings-rtl"> Right To Left (rtl)</label>
+									</div>
+
+									<div class="ace-settings-item">
+										<input type="checkbox" class="ace ace-checkbox-2 ace-save-state" id="ace-settings-add-container" autocomplete="off" />
+										<label class="lbl" for="ace-settings-add-container">
+											Inside
+											<b>.container</b>
+										</label>
+									</div>
+									-->
+								</div><!-- /.pull-left -->
+
+								<div class="pull-left width-50">
+									<!--<div class="ace-settings-item">
+										<input type="checkbox" class="ace ace-checkbox-2" id="ace-settings-hover" autocomplete="off" />
+										<label class="lbl" for="ace-settings-hover"> Submenu on Hover</label>
+									</div>
+
+									<div class="ace-settings-item">
+										<input type="checkbox" class="ace ace-checkbox-2" id="ace-settings-compact" autocomplete="off" />
+										<label class="lbl" for="ace-settings-compact"> Compact Sidebar</label>
+									</div>
+
+									<div class="ace-settings-item">
+										<input type="checkbox" class="ace ace-checkbox-2" id="ace-settings-highlight" autocomplete="off" />
+										<label class="lbl" for="ace-settings-highlight"> Alt. Active Item</label>
+									</div>-->
+								</div><!-- /.pull-left -->
+							</div><!-- /.ace-settings-box -->
+						</div><!-- /.ace-settings-container -->
+						{% endif %}
+
+						{% block page_header %}
+							<!--<div class="page-header">
+								<h1>
+									Dashboard
+									<small>
+										<i class="ace-icon fa fa-angle-double-right"></i>
+										overview &amp; stats
+									</small>
+								</h1>
+							</div>--><!-- /.page-header -->
+						{% endblock %}						
+
+						<div class="row">
+							<div class="col-xs-12" id="content-block">
+								<!-- PAGE CONTENT BEGINS -->
+								{% block content %}
+								{% endblock %}
+								<!-- PAGE CONTENT ENDS -->
+							</div><!-- /.col -->
+						</div><!-- /.row -->
+
+					</div><!-- /.page-content -->
+				</div>
+			</div><!-- /.main-content -->
+
+			{% if menu is null or menu %}
+				<div class="footer">
+					<div class="footer-inner">
+						<div class="footer-content">
+							<span class="bigger-120">
+								<span class="blue bolder">AjSoft</span>
+								&copy; 2017
+							</span>
+
+							&nbsp; &nbsp;
+							<span class="action-buttons">
+								<a href="#">
+									<i class="ace-icon fa fa-twitter-square light-blue bigger-150"></i>
+								</a>
+
+								<a href="#">
+									<i class="ace-icon fa fa-facebook-square text-primary bigger-150"></i>
+								</a>
+
+								<a href="#">
+									<i class="ace-icon fa fa-rss-square orange bigger-150"></i>
+								</a>
+							</span>
+						</div>
+					</div>
+				</div>
+			{% endif %}
+
+			<a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
+				<i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
+			</a>
+		</div><!-- /.main-container -->
+
+		<!-- basic scripts -->
+
+		<!--[if !IE]> -->
+		<script src="{{ 'assets/js/jquery-2.1.4.min.js'|public }}"></script>
+
+		<!-- <![endif]-->
+
+		<!--[if IE]>
+		<script src="{{ 'assets/js/jquery-1.11.3.min.js'|public }}"></script>
+		<![endif]-->
+		<script type="text/javascript">
+			if('ontouchstart' in document.documentElement) document.write("<script src='assets/js/jquery.mobile.custom.min.js'>"+"<"+"/script>");
+		</script>
+		<script src="{{ 'assets/js/bootstrap.min.js'|public }}"></script>
+		
+
+		<!-- page specific plugin scripts -->
+
+		<!--[if lte IE 8]>
+		  <script src="{{ 'assets/js/excanvas.min.js'|public }}"></script>
+		<![endif]-->
+		<script src="{{ 'assets/js/jquery-ui.custom.min.js'|public }}"></script>
+		<script src="{{ 'assets/js/jquery.ui.touch-punch.min.js'|public }}"></script>
+		<script src="{{ 'assets/js/jquery.easypiechart.min.js'|public }}"></script>
+		<script src="{{ 'assets/js/jquery.sparkline.index.min.js'|public }}"></script>
+		<script src="{{ 'assets/js/jquery.flot.min.js'|public }}"></script>
+		<script src="{{ 'assets/js/jquery.flot.pie.min.js'|public }}"></script>
+		<script src="{{ 'assets/js/jquery.flot.resize.min.js'|public }}"></script>
+
+		<!-- ace scripts -->
+		<script src="{{ 'assets/js/ace-elements.min.js'|public }}"></script>
+		<script src="{{ 'assets/js/ace.min.js'|public }}"></script>
+
+		<!-- Aj scripts -->
+		<script src="{{ 'bower_components/bootbox/bootbox.min.js'|public }}"></script>
+		<script src="{{ 'bower_components/datatables/jquery.dataTables.js'|public }}"></script>
+		<script src="{{ 'bower_components/riot/riot.min.js'|public }}"></script>
+		<script src="{{ 'bower_components/riot/riot.compiler.min.js'|public }}"></script>
+		<script src="{{ 'bower_components/jquery.form.min/index.js'|public }}"></script>
+		<script src="{{ 'bower_components/moment/min/moment.min.js'|public }}"></script>
+		<script src="{{ 'bower_components/moment/locale/es.js'|public }}"></script>
+		<script src="{{ 'bower_components/EasyAutocomplete/dist/jquery.easy-autocomplete.min.js'|public }}"></script>
+		<script src="{{ 'bower_components/jquery/dist/jquery-ui.js'|public }}"></script>
+		<script src="{{ 'js/anexgrid/jquery.anexgrid.min.js'|public }}"></script>
+		<script src="{{ 'js/ini.js'|public }}"></script>
+		<script src="{{ 'js/formulas.js'|public }}"></script>
+		<script src="{{ 'js/funciones.js'|public }}"></script>
+		<script src="{{ 'js/bootstrap-filestyle.js'|public }}"></script>
+		<script src="{{ 'bower_components/jquery.validate.js'|public }}"></script>
+	
+		<script src="{{ 'assets/js/bootstrap-datepicker.min.js'|public }}"></script>
+		<script src="{{ 'assets/js/bootstrap-datetimepicker.min.js'|public }}"></script>
+		<script src="{{ 'bower_components/select2/select2.min.js'|public }}"></script>
+		<script src="{{ 'bower_components/select2/i18n/es.js'|public }}"></script>
+
+		{% block scripts %}{% endblock %}
+
+		<script>
+			function redirect(url) { url = url || ''; window.location.href = base_url(url);}
+			function base_url(url) { url = url || ''; return '{{''|url}}' + url;}
+		</script>
+		
+	</body>
+</html>

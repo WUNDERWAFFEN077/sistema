@@ -1,0 +1,31 @@
+<?php
+return [
+    /* Database access */
+    'database' => [
+        'driver'    => 'mysql',
+        'host'      => 'localhost',
+        'database'  => 'sistema',
+        'username'  => 'root',
+        'password'  => '4cu4r10',
+        'charset'   => 'utf8',
+        'collation' => 'utf8_unicode_ci',
+        //collation' => 'utf8_spanish_ci',
+        'prefix'    => '',
+    ],
+
+    /* Session configuration */
+    'session-time' => 10, // hours
+    'session-name' => 'application-auth',
+
+    /* Secret key */
+    'secret-key' => '@asd9ws.w6*',
+
+    /* Environment */
+    'environment' => 'dev', // Options: dev, prod, stop
+
+    /* Timezone */
+    'timezone' => 'America/Lima',
+
+    /* Cache */
+    'cache' => false
+];

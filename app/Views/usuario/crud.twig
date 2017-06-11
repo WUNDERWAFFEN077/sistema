@@ -1,0 +1,105 @@
+{% extends "partials/layout.twig" %}
+{% block breadcrumbs %}
+    <div class="breadcrumbs ace-save-state" id="breadcrumbs">
+        <ul class="breadcrumb">
+            <li>
+                <i class="ace-icon glyphicon glyphicon-th-large"></i>
+                <a href="{{ 'usuario'|url }}"> Usuarios </a>
+            </li>
+            <li class="active">
+                {% if model.id is not null %}          
+                 Actualizar
+                {% else %} 
+                 Registrar
+                {% endif %}
+                
+            </li>     
+        </ul><!-- /.breadcrumb -->
+
+        <div class="nav-search" id="nav-search">
+            <form class="form-search">
+                <span class="input-icon">
+                    <input type="text" placeholder="Buscar ..." class="nav-search-input" id="nav-search-input" autocomplete="off" />
+                    <i class="ace-icon fa fa-search nav-search-icon"></i>
+                </span>
+            </form>
+        </div><!-- /.nav-search -->
+    </div>
+{% endblock %}
+{% block content %}
+
+    <form id="form" method="post" action="{{ 'usuario/guardar'|url }}">
+         <div class="alert-container"></div>
+         <div class="panel panel-info">
+            <div class="panel-heading">
+              <h3 class="panel-title"><i class='glyphicon glyphicon-cog'></i> Mantenimiento de Usuarios</h3>
+            </div>
+            <div class="panel-body">
+             <div class="row">            
+                
+                <div class="col-md-12 col-lg-12">
+                <input type="hidden" class="form-control" name="id" id="id" value="{{model.id}}" />
+                <table class="table table-condensed">
+                    <tbody>
+                        <tr>
+                            <td class='col-md-3'>Rol:</td>
+                            <td>
+                                <select name="rol_id" class="form-control input-sm">
+                                {% for rol in roles %}
+                                <option value="{{rol.id}}" {{ model.rol_id == rol.id ? 'selected' : '' }}>{{rol.nombre}}</option>
+                                {% endfor %}
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class='col-md-3'>Nombre:</td>
+                            <td>
+                                <input type="text" class="form-control input-sm" name="nombre" id="nombre" value="{{model.nombre}}" />
+                                 <span data-key="nombre" class="form-validation-failed"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class='col-md-3'>Apellido:</td>
+                            <td>
+                                <input type="text" class="form-control input-sm" name="apellido" id="apellido" value="{{model.apellido}}" />
+                                 <span data-key="apellido" class="form-validation-failed"></span>
+                            </td>
+                        </tr>                        
+                        <tr>
+                            <td class='col-md-3'>Correo:</td>
+                            <td>
+                                <input type="email" class="form-control input-sm" name="correo" value="{{ model.correo }}" autocomplete="off" />
+                                <span data-key="correo" class="form-validation-failed"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class='col-md-3'>Password:</td>
+                            <td>
+                                <input type="password" class="form-control input-sm" name="password" value="" autocomplete="off" />
+                                {% if model.id %}
+                                <span class="help-block">Para actualizar la contraseña escriba una nueva</span>
+                                {% endif %}
+                                <span data-key="password" class="form-validation-failed"></span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                   
+                   
+                </div>            
+            </div>
+            <div class="form-group panel-footer text-center">
+                <button type="submit" class="btn btn-sm btn-success" data-ajax="true"><i class="glyphicon glyphicon-refresh"></i> Guardar</button>
+                &nbsp;&nbsp;
+                <button onclick="redirect('usuario')" type="button" class="btn btn-sm btn-danger" ><i class="glyphicon glyphicon-ban-circle"></i> Cancelar</button>             
+               
+            </div>
+
+         </div>
+        </div>
+    </form>
+{% endblock %}
+
+{% block scripts %}
+    
+{% endblock %}

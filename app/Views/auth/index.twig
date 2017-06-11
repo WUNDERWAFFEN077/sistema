@@ -1,0 +1,316 @@
+{% include('partials/header.twig') %}
+    <style>
+    html, body {
+        background: url('public/images/login_bg.jpg') no-repeat center fixed;
+        background-size: cover;
+        -moz-background-size: cover;
+        -webkit-background-size: cover;
+        -o-background-size: cover;
+        margin: 0;
+        padding: 0;
+    }
+
+    .login {
+        background: rgb(255, 255, 255) none repeat scroll 0 0;
+        border: 1px solid #ebebeb;
+        box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.15), 0 1px 2px 0 rgba(0, 0, 0, 0.098);
+        border-radius: 4px;
+        margin: 70px auto;
+        padding: 20px;
+        width: 350px;
+        opacity: 0.97;
+    }
+
+        .login h1 {
+            color: rgb(0, 0, 0);
+            font-family: sans-serif;
+            font-size: 17px;
+            margin-bottom: 30px;
+            margin-top: 0;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+    .logfield-wrap {
+        display: block;
+        margin-bottom: 20px;
+        position: relative;
+    }
+
+        .logfield-wrap input {
+            font-size: 15px;
+            height: 30px;
+            line-height: 1.5;
+            width: 100%;
+            border-bottom: 1px solid #e0e0e0;
+            border-left: none;
+            border-right: none;
+            border-top: none;
+            -moz-appearance: none;
+            -webkit-appearance: none;
+            outline: none;
+            border-radius: 0;
+            padding: 0 50px 0 0;
+            color:#000 !important;
+        }
+
+    .fg-toogle {
+        color: #959595;
+        font-family: sans-serif;
+        font-size: 13px;
+        font-weight: 400;
+        left: 0;
+        pointer-events: none;
+        position: absolute;
+        top: 5px;
+        transition: all 200ms ease 0s;
+        width: 100%;
+        z-index: 0;
+    }
+
+    .log-line {
+        background: #0079ce none repeat scroll 0 0;
+        bottom: 0;
+        content: "";
+        height: 2px;
+        left: 0;
+        position: absolute;
+        transition: all 300ms ease 0s;
+        width: 0;
+        z-index: 3;
+    }
+
+    .logfield-wrap input:focus + label + .log-line {
+        width: 100%;
+    }
+
+
+    .login .button_acceder {
+        width: 100%;
+        padding: 7px 7px;
+        background: #0079CE;
+        box-sizing: border-box;
+        border-radius: 3px;
+        border: 1px solid #0079CE;
+        color: #fff;
+        font-weight: bold;
+        text-transform: uppercase;
+        font-size: 14px;
+        outline: none;
+        font-family: sans-serif;
+        cursor: pointer;
+    }
+
+        .login button:hover {
+            background: #008DDE;
+        }
+
+    .login p {
+        text-align: center;
+    }
+
+    .keep-in {
+        color: #3a3939;
+        cursor: pointer;
+        float: left;
+        font-family: sans-serif;
+        font-size: 13px;
+        font-weight: 400;
+        margin: 0 0 26px;
+    }
+
+        .keep-in > .chkd {
+            display: inline-block;
+            margin: 0 3px 0 0;
+            vertical-align: middle;
+        }
+
+    .forget-section {
+        color: #2f2e2e;
+        float: right;
+        font-size: 13px;
+        font-weight: 400;
+        text-decoration: none;
+        font-family: sans-serif;
+        font-size: 13px;
+        font-weight: 400;
+    }
+
+
+    .or-area {
+        border-top: 1px solid #e3e2e2;
+        box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.9) inset;
+        clear: both;
+        margin: 30px 0 12px;
+        text-align: center;
+    }
+
+        .or-area span {
+            background-color: #f7f9fb;
+            color: #737a89;
+            font-family: sans-serif;
+            font-size: 15px;
+            padding: 0 20px;
+            position: relative;
+            text-transform: capitalize;
+            top: -14px;
+        }
+
+
+    .social-btn {
+        border: 0 none;
+        border-radius: 3px;
+        color: #ffffff;
+        display: inline-block;
+        font-family: sans-serif;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 1em;
+        margin: 0 0.25em 0.5em 0;
+        overflow: hidden;
+        padding: 0;
+        position: relative;
+        text-decoration: none;
+        text-transform: uppercase;
+        width: 100%;
+    }
+
+        .social-btn:hover {
+            color: #fff;
+        }
+
+
+
+    .social-icon, .social-text {
+        display: block;
+        float: left;
+    }
+
+
+    .social-icon {
+        border-right: 0.1em solid rgba(255, 255, 255, 0.1);
+        box-shadow: -0.1em 0 0 rgba(0, 0, 0, 0.1) inset;
+        height: 24px;
+        margin: 0 -0.4em 0 0;
+        padding: 6px 12px;
+        width: 20px;
+    }
+
+
+
+
+    .social-text {
+        font-size: 14px;
+        font-weight: bold;
+        padding: 10px 16px;
+        text-align: center;
+    }
+
+    .fb {
+        background-color: #205081;
+    }
+
+        .fb:hover, .fb:active {
+            background-color: #2f5f90;
+        }
+
+    .tw, .tw:active {
+        background-color: #108ac1;
+    }
+
+        .tw:hover {
+            background-color: #21aded;
+        }
+
+
+
+
+    @media only screen and (max-width: 400px) {
+        .login {
+            width: 85%;
+        }
+    }
+
+
+    //remove red border from required field
+    input:required {
+        box-shadow:none;
+    }
+    input:invalid {
+        box-shadow:none;
+    }
+    </style>
+
+<div class="login">
+        <div class="login-section">
+            <h1>Iniciar Sesión</h1>
+            <form role="form" method="post" action="{{ 'auth/signin'|url }}">
+                <div class="alert-container"></div>
+                <div class="logfield-wrap">
+                    <input type="text" class="form-control" type="email" value="" name="correo" />
+                    <label class="fg-toogle">Usuario</label>
+                    <span data-key="email" class="form-validation-failed"></span>
+                </div>
+                <div class="logfield-wrap">
+                    <input type="password" class="form-control" type="email" value="" name="password" />
+                    <label class="fg-toogle">Contraseña</label>
+                    <span data-key="password" class="form-validation-failed"></span>
+                </div>
+                <label class="keep-in">
+                    <input class="chkd rmChk" type="checkbox" name="aggrement" value="Condition">
+                    Recordarme
+                </label>
+                <a id="forgotPwd" class="forgotBt12 forget-section" href="javascript:;">¿Ha olvidado su contraseña?</a>
+                <button type="submit" data-ajax="true" class="button_acceder">Ingresar</button>
+            </form>
+            
+        </div>
+    </div> <!-- end login -->
+
+<script src="{{ 'assets/js/jquery-2.1.4.min.js'|public }}"></script>
+<!-- ace scripts -->
+<script src="{{ 'assets/js/ace-elements.min.js'|public }}"></script>
+<script src="{{ 'assets/js/ace.min.js'|public }}"></script>
+
+<!-- Aj scripts -->
+<script src="{{ 'bower_components/bootbox/bootbox.min.js'|public }}"></script>
+<script src="{{ 'bower_components/riot/riot.min.js'|public }}"></script>
+<script src="{{ 'bower_components/riot/riot.compiler.min.js'|public }}"></script>
+<script src="{{ 'bower_components/jquery.form.min/index.js'|public }}"></script>
+<script src="{{ 'bower_components/moment/min/moment.min.js'|public }}"></script>
+<script src="{{ 'bower_components/moment/locale/es.js'|public }}"></script>
+<script src="{{ 'bower_components/EasyAutocomplete/dist/jquery.easy-autocomplete.min.js'|public }}"></script>
+<script src="{{ 'bower_components/jquery/dist/jquery-ui.js'|public }}"></script>
+<script src="{{ 'js/anexgrid/jquery.anexgrid.min.js'|public }}"></script>
+<script src="{{ 'js/ini.js'|public }}"></script>
+<script src="{{ 'js/formulas.js'|public }}"></script>
+<script src="{{ 'js/funciones.js'|public }}"></script>
+<script src="{{ 'js/bootstrap-filestyle.js'|public }}"></script>
+<script src="{{ 'bower_components/jquery.validate.js'|public }}"></script>
+<script>
+    function redirect(url) { url = url || ''; window.location.href = base_url(url);}
+    function base_url(url) { url = url || ''; return '{{''|url}}' + url;}
+</script>
+<script>
+    $(function(){
+
+      //set position of label on load if value not empty
+       $('.logfield-wrap input').each(function(){
+        if($(this).val().trim().length>0){
+         $(this).next('.fg-toogle').css('top','-14px');
+        }
+       });
+    
+    
+      $('.logfield-wrap input').focus(function(){
+        $(this).next('.fg-toogle').css('top','-14px');
+      }).blur(function(){
+       if($(this).val().trim().length > 0){
+          $(this).next('.fg-toogle').css('top','-14px');
+        }else
+        {
+         $(this).next('.fg-toogle').css('top','5px');
+        }
+      });
+    });
+</script>

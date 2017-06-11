@@ -1,0 +1,24 @@
+{
+    "name": "xpapachox/sistema",
+    "authors": [
+        {
+            "name": "Amado Rudas Diaz",
+            "email": "wunderwaffen_aj@hotmail.com"
+        }
+    ],
+    "autoload": {
+	    "psr-4": {
+	        "Core\\": "core/",
+	        "App\\": "app/"
+	    }
+	  },
+	  "require": {
+	    "phroute/phroute": "^2.1",
+	    "twig/twig": "~1.0",
+	    "monolog/monolog": "^1.21",
+	    "respect/validation": "^1.1",
+	    "illuminate/database": "^5.2",
+	    "intervention/image": "^2.3",
+	    "dompdf/dompdf": "^0.8.0"
+	  }
+}

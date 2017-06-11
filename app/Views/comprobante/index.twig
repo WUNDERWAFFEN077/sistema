@@ -1,0 +1,226 @@
+{% extends "partials/layout.twig" %}
+{% block breadcrumbs %}
+    <div class="breadcrumbs ace-save-state" id="breadcrumbs">
+        <ul class="breadcrumb">
+            <li>
+                <i class="ace-icon fa fa-home home-icon"></i>
+                <a href="{{ 'home'|url }}">Inicio</a>
+            </li>
+            <li class="active">Comprobantes</li>            
+        </ul><!-- /.breadcrumb -->
+        
+    </div>
+{% endblock %}
+
+
+{% block content %}   
+
+    <div class="alert alert-success hidden" id="message" role="alert">
+        <div>            
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <span id="user-message">&nbsp;</span>
+        </div> 
+    </div>
+    <div class="show_content top5">    
+        <form class="form-horizontal" role="form" id="datos_productos"> 
+            <div class="form-group row" style="position: relative;">                
+                <div class="col-lg-5 col-md-5 col-sm-5 col-xs-12">
+                    <div class="input-group">
+                    <input type="text" class="form-control search-query" placeholder="Buscar comprobante" id="q" onkeyup="load();" autocomplete="off">
+                    <span class="input-group-btn">
+                    <button class="btn btn-default btn-white" type="button" onclick="load();"><i class="fa fa-search"></i></button>
+                    </span>
+                    </div> 
+                </div>                    
+                <div class="col-lg-7 col-md-7 col-sm-7 col-xs-12" style="height: 100%;position: relative;right: 0;top: 0;background: white;">  
+                    <div class="btn-group pull-right"> 
+                        <div style="width:25px;">&nbsp;</div>
+                    </div> 
+                    <div class="btn-group pull-right" >                
+                        <button type='button' class="btn btn-sm btn-success" onclick="redirect('comprobante/crud')"><span class="glyphicon glyphicon-plus" ></span> Nuevo </button>
+                    </div>
+                    <div class="btn-group pull-left" style=" position: relative;top:5px;">                        
+                        <input type="checkbox" class="chk_tipo" name="chk_tipo[]" value="01" /><span style="padding-left: 5px;position: relative;top: -1px;"><strong>Factura</strong></span>&nbsp;
+                        <input type="checkbox" class="chk_tipo" name="chk_tipo[]" value="03"/><span style="padding-left: 5px;position: relative;top: -1px;"><strong>Boleta</strong></span>&nbsp;
+                        <input type="checkbox" class="chk_tipo" name="chk_tipo[]" value="12"/><span style="padding-left: 5px;position: relative;top: -1px;"><strong>Ticket</strong></span>       
+                    </div>              
+                </div>
+            </div>
+            
+        </form>
+        <div id="grid"></div>
+     
+</div>
+
+   
+
+    
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(document).ready(function(){
+    load();
+
+    
+    $('#q').keydown(function(event){
+        if (event.keyCode === 10 || event.keyCode === 13){
+            event.preventDefault();
+            event.stopPropagation();
+        }      
+    });
+
+    $("#grid").on('click', '.btn-anular', function(){
+        var id = $(this).attr('param');
+        confirmAnular(id);
+        return false;
+    });
+
+    $("#grid").on('click', '.btn-procesar', function(){
+        var id = $(this).attr('param');
+        confirmProcesar(id);
+        return false;
+    });
+
+    $(".chk_tipo").on('click', '', function(){        
+       load();
+    });
+})
+
+function load(){
+    var docs = $('.chk_tipo:checked').map(function(){
+            return "'"+this.value+"'";
+        }).get();
+    docs = docs.toString();
+
+    var data = {
+        class: 'table-striped table-bordered table-condensed table-hover',
+        columnas: [                      
+            /*{ leyenda: 'Id', class: 'text-center',style: 'width:120px;', ordenable: true, columna: 'id' },*/
+            { leyenda: 'Tipo', class: 'text-center',style: 'width:120px;', ordenable: true, columna: 'tipo' },
+            { leyenda: 'Serie', class: 'text-center',style: 'width:100px;', ordenable: true, columna: 'serie' },
+            { leyenda: 'Número', class: 'text-center',style: 'width:120px;', ordenable: true, columna: 'numero' },
+            { leyenda: 'Cliente', class: 'text-center', ordenable: true, columna: 'nombre', style: 'width:300px;' },
+            { leyenda: 'Emitido', class: 'text-center', ordenable: true, columna: 'fecha', style: 'width:150px;' },
+            { leyenda: 'Sub Total', columna: 'sub_total', style: 'width:120px;', class: 'text-center' },
+            { leyenda: 'IGV', columna: 'iva', style: 'width:120px;', class: 'text-center' },
+            { leyenda: 'Total', columna: 'total', style: 'width:120px;', class: 'text-center' },  
+            { leyenda: 'Acción', class: 'text-center', style: 'width:80px;' },   
+        ],
+        modelo: [
+            
+            /*{ propiedad: 'id', class: 'text-center' },*/
+            { propiedad: 'tipo', class: 'text-center', formato: function(tr, obj, valor){
+                return tipo_documento(valor);
+            } },
+            { propiedad: 'serie',class: 'text-center' },
+            { propiedad: 'numero',class: 'text-center', formato: function(tr, obj, valor){
+                return anexGrid_link({
+                    href: '{{ 'comprobante/crud/'|url }}' + obj.id,
+                    contenido: '#' + parseInt(valor).padLeft(6)
+                });
+            }},
+            { propiedad: 'nombre' },
+            { propiedad: 'fecha', class: 'text-center', formato: function(tr, obj, valor){
+                return moment(valor).format('DD/MM/YYYY');
+            } },
+            { propiedad: 'sub_total', class: 'text-right', formato: function(tr, obj, valor){
+                return parseFloat(valor).format(2);
+            } },
+            { propiedad: 'iva', class: 'text-right', formato: function(tr, obj, valor){
+                return parseFloat(valor).format(2);
+            } },
+            { propiedad: 'total', class: 'text-right', formato: function(tr, obj, valor){
+                return parseFloat(valor).format(2);
+            } },
+           { class: 'text-center', formato: function(tr, obj, valor){
+                return anexGrid_dropdown({
+                    contenido: '<i class="glyphicon glyphicon-cog"></i>',
+                    class: 'btn btn-minier btn-primary btn-xs',
+                    target: '_blank',
+                    id: 'editar-' + obj.id,
+                    data: [
+                        { href: base_url('comprobante/crud/'+obj.id), 
+                        href_class:'',
+                        contenido: '<i class="glyphicon glyphicon-edit"></i> Editar' },
+                        { href: '#',
+                          param:obj.id,
+                        href_class:'btn-procesar',
+                        contenido: '<i class="glyphicon glyphicon-cog"></i> Procesar' },
+                        { href: base_url('comprobante/pdf/'+obj.id), 
+                        href_class:'btn-anular',
+                        contenido: '<i class="glyphicon glyphicon-trash"></i> Anular' },
+                        { href: base_url('comprobante/pdf/'+obj.id), 
+                        href_class:'',
+                        contenido: '<i class="fa fa-download"></i> Generar PDF' },
+                    ]
+                });
+                }
+            },
+           
+            
+        ],
+        url: '{{ 'comprobante/grid'|url }}',
+        parametros: [{q:$("#q").val(),docs:docs}],
+        paginable: true,
+        limite: [20, 60, 100],
+        columna: 'id',
+        columna_orden: 'desc'
+    };
+
+    var grid = $("#grid").anexGrid(data);
+
+}
+
+function confirmProcesar(id){
+    var message = 'Desea procesar el comprobante?';
+    var message_result = 'El comprobante ha sido procesado correctamente.';
+    bootbox.confirm({ 
+      size: "small",
+      message: message, 
+      callback: function(result){ 
+          console.log(result);
+          if(result){
+            $.post(base_url('comprobante/procesar'), {
+                id: id
+            }, function(r){
+                load();
+                $("#message").removeClass('hidden');
+                $("#user-message").html(message_result);
+                $("#message").fadeTo(2000, 500).slideUp(500, function(){
+                    //$("#message").slideUp(500);
+                    $("#message").alert('close');
+                });  
+            }, 'json')
+            
+        }
+      }
+    })
+}
+    
+function confirmAnular(id){
+    var message = 'Desea anular el comprobante?';
+    var message_result = 'El comprobante ha sido anulado.';
+    bootbox.confirm({ 
+      size: "small",
+      message: message, 
+      callback: function(result){ 
+          if(result){
+            $.post(base_url('comprobante/anular'), {
+                id: id
+            }, function(r){
+                load();
+                $("#message").removeClass('hidden');
+                $("#user-message").html(message_result);
+                $("#message").fadeTo(2000, 500).slideUp(500, function(){
+                    //$("#message").slideUp(500);
+                    $("#message").alert('close');
+                });  
+            }, 'json')
+            
+        }
+      }
+    })
+}
+</script>
+{% endblock %}
