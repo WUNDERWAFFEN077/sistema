@@ -45,6 +45,7 @@
 
 {% block scripts %}
 <script>
+
 $(document).ready(function(){
     var fecha = new Date();
     var anio_actual = fecha.getFullYear();
@@ -84,7 +85,7 @@ function cargarGrilla(y,m){
         modelo: [    
             { propiedad: 'anio', class: 'text-center'},   
             { propiedad: 'mes', class: 'text-center', formato: function(tr, obj, valor){
-                return valor.padLeft(2);
+                return parseInt(valor).padLeft(2);
             } },  
             { propiedad: 'producto'}, 
             { propiedad: 'cantidad', class: 'text-right', formato: function(tr, obj, valor){

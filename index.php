@@ -66,7 +66,7 @@ require_once 'app/routes.php';
 
 $dispatcher = new Phroute\Phroute\Dispatcher($router->getData());
 
-
+//echo "LOL";exit();/*
 
 $response = $dispatcher->dispatch(
     $_SERVER['REQUEST_METHOD'],

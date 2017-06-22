@@ -39,7 +39,7 @@ class ReporteController extends Controller {
     }
 
     public function postInventarios_grid($y,$m) { 
-        //print_r($this->reporteRepo->inventariosPorMes($y,$m));exit();
+        print_r($this->reporteRepo->inventariosPorMes($y,$m));exit();
         return $this->reporteRepo->inventariosPorMes($y,$m);
     }
 
